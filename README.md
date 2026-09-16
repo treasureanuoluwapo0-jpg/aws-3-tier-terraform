@@ -48,17 +48,17 @@ Run `terraform destroy`
 
 ## Screenshots
 ![Screenshot 1](Screenshot%20(37).png)
-![Screenshot 2](Screenshot%20(38).png)
-![Screenshot 3](Screenshot%20(39).png)
-![Screenshot 4](Screenshot%20(40).png)
+![Screenshot 2](Screenshot%20(65).png)
+![Screenshot 3](Screenshot%20(62).png)
+![Screenshot 4](Screenshot%20(65).png)
 ![Screenshot 5](Screenshot%20(41).png)
 ![Screenshot 6](Screenshot%20(42).png)
 ![Screenshot 7](Screenshot%20(43).png)
 ![Screenshot 8](Screenshot%20(44).png)
-![Screenshot 9](Screenshot%20(45).png)
-![Screenshot 10](Screenshot%20(46).png)
-![Screenshot 11](Screenshot%20(47).png)
-![Screenshot 12](Screenshot%20(48).png)
+![Screenshot 9](Screenshot%20(60).png)
+![Screenshot 10](Screenshot%20(61).png)
+![Screenshot 11](Screenshot%20(63).png)
+![Screenshot 12](Screenshot%20(64).png)
 
 ## Challenges Faced
 - Security Group misconfiguration locked me out of SSH
