@@ -1,0 +1,4 @@
+# Copy this file to terraform.tfvars and fill in the real values.
+# DO NOT commit terraform.tfvars to GitHub.
+
+db_password = "YourStrongPasswordHere"
