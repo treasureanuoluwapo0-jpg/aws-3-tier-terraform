@@ -47,7 +47,17 @@ s3_bucket = "my-project-static-20260911"
 Run `terraform destroy`
 
 ## Screenshots
-
+![Screenshots](screenshot37.png)
+![Screenshots](screenshot41.png)
+![Screenshots](screenshot43.png)
+![Screenshots](screenshot42.png)
+![Screenshots](screenshot44.png)
+![Screenshots](screenshot60.png)
+![Screenshots](screenshot61.png)
+![Screenshots](screenshot62.png)
+![Screenshots](screenshot63.png)
+![Screenshots](screenshot64.png)
+![Screenshots](screenshot65.png)
 
 ## Challenges Faced
 - Security Group misconfiguration locked me out of SSH
