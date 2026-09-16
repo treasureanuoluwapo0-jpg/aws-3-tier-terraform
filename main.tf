@@ -95,19 +95,21 @@ resource "aws_security_group" "alb" {
   name        = "alb-sg"
   description = "Allow HTTP from internet"
   vpc_id      = aws_vpc.main.id
-  ingress {
-    from_port   = 80
-    to_port     = 80
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-  egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-  tags = { Name = "alb-sg" }
+  tags        = { Name = "alb-sg" }
+}
+
+resource "aws_vpc_security_group_ingress_rule" "alb_http" {
+  security_group_id = aws_security_group.alb.id
+  cidr_ipv4         = "0.0.0.0/0"
+  from_port         = 80
+  ip_protocol       = "tcp"
+  to_port           = 80
+}
+
+resource "aws_vpc_security_group_egress_rule" "alb_all" {
+  security_group_id = aws_security_group.alb.id
+  cidr_ipv4         = "0.0.0.0/0"
+  ip_protocol       = "-1"
 }
 
 # Security Group: EC2
@@ -115,25 +117,29 @@ resource "aws_security_group" "ec2" {
   name        = "ec2-sg"
   description = "Allow traffic from ALB"
   vpc_id      = aws_vpc.main.id
-  ingress {
-    from_port       = 80
-    to_port         = 80
-    protocol        = "tcp"
-    security_groups = [aws_security_group.alb.id]
-  }
-  ingress {
-    from_port   = 22
-    to_port     = 22
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-  egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-  tags = { Name = "ec2-sg" }
+  tags        = { Name = "ec2-sg" }
+}
+
+resource "aws_vpc_security_group_ingress_rule" "ec2_http_from_alb" {
+  security_group_id            = aws_security_group.ec2.id
+  referenced_security_group_id = aws_security_group.alb.id
+  from_port                    = 80
+  ip_protocol                  = "tcp"
+  to_port                      = 80
+}
+
+resource "aws_vpc_security_group_ingress_rule" "ec2_ssh" {
+  security_group_id = aws_security_group.ec2.id
+  cidr_ipv4         = "0.0.0.0/0"
+  from_port         = 22
+  ip_protocol       = "tcp"
+  to_port           = 22
+}
+
+resource "aws_vpc_security_group_egress_rule" "ec2_all" {
+  security_group_id = aws_security_group.ec2.id
+  cidr_ipv4         = "0.0.0.0/0"
+  ip_protocol       = "-1"
 }
 
 # Security Group: RDS
@@ -141,19 +147,21 @@ resource "aws_security_group" "rds" {
   name        = "rds-sg"
   description = "Allow traffic from EC2"
   vpc_id      = aws_vpc.main.id
-  ingress {
-    from_port       = 5432
-    to_port         = 5432
-    protocol        = "tcp"
-    security_groups = [aws_security_group.ec2.id]
-  }
-  egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-  tags = { Name = "rds-sg" }
+  tags        = { Name = "rds-sg" }
+}
+
+resource "aws_vpc_security_group_ingress_rule" "rds_from_ec2" {
+  security_group_id            = aws_security_group.rds.id
+  referenced_security_group_id = aws_security_group.ec2.id
+  from_port                    = 5432
+  ip_protocol                  = "tcp"
+  to_port                      = 5432
+}
+
+resource "aws_vpc_security_group_egress_rule" "rds_all" {
+  security_group_id = aws_security_group.rds.id
+  cidr_ipv4         = "0.0.0.0/0"
+  ip_protocol       = "-1"
 }
 
 # Launch Template (replaces standalone EC2)
@@ -307,6 +315,16 @@ resource "aws_iam_role_policy_attachment" "ec2_s3_attach" {
 }
 
 # CloudWatch Alarm
+resource "aws_sns_topic" "alerts" {
+  name = "my-cloud-alerts"
+}
+
+resource "aws_sns_topic_subscription" "email" {
+  topic_arn = aws_sns_topic.alerts.arn
+  protocol  = "email"
+  endpoint  = "treasureanuoluwapo0@gmail.com"  
+}
+
 resource "aws_cloudwatch_metric_alarm" "cpu_high" {
   alarm_name          = "cpu-high"
   comparison_operator = "GreaterThanThreshold"
@@ -317,6 +335,7 @@ resource "aws_cloudwatch_metric_alarm" "cpu_high" {
   statistic           = "Average"
   threshold           = 80
   alarm_description   = "EC2 CPU exceeds 80%"
+  alarm_actions       = [aws_sns_topic.alerts.arn]
   dimensions = {
     AutoScalingGroupName = aws_autoscaling_group.main.name
   }
