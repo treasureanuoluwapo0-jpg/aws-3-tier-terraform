@@ -1,7 +1,7 @@
 # 3-Tier Web Application on AWS (Terraform)
 
 ## Overview
-A production-grade 3-tier web application deployed on AWS using Terraform.
+A 3-tier web application deployed on AWS using Terraform.
 Includes VPC, EC2 Auto Scaling Group, Application Load Balancer, RDS PostgreSQL
 database in private subnets, S3 storage, IAM roles, and CloudWatch monitoring.
 
