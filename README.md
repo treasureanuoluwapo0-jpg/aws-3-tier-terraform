@@ -34,6 +34,15 @@ Internet → ALB → Auto Scaling Group (EC2) → RDS (PostgreSQL)
 4. Run `terraform apply`
 5. Copy the `alb_dns_name` from outputs and open it in your browser
 
+## Deployment Output
+Apply complete! Resources: 25 added, 0 changed, 0 destroyed.
+
+Outputs:
+
+alb_dns_name = "my-alb-1234567890.us-east-1.elb.amazonaws.com"
+db_endpoint = "my-database.xxxxx.us-east-1.rds.amazonaws.com:5432"
+s3_bucket = "my-project-static-20260911"
+
 ## How to Destroy
 Run `terraform destroy`
 
